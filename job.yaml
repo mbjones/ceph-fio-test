@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ceph-test
+spec:
+  template:
+    spec:
+      containers:
+      - name: ubuntu
+        image: ubuntu:latest
+        imagePullPolicy: IfNotPresent
+        #command: ['sh', '-c', 'echo "Liftoff!" > testfile.txt && cat testfile.txt']
+        command: [ "/bin/bash", "-c", "while true; do sleep 30; done;" ]
+        volumeMounts:
+        - name: ceph-test-volume
+          mountPath: "/var/data"
+          readOnly: false
+      restartPolicy: Never
+      volumes:
+      - name: ceph-test-volume
+        persistentVolumeClaim:
+          claimName: ceph-test-pvc

@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fio
+  labels:
+    app: fio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fio
+  template:
+    metadata:
+      labels:
+        app: fio
+    spec:
+      containers:
+      - name: fio
+        image: ghcr.io/nceas/fio:3.2.0
+        command: ["sh"]
+        args: ["-c", "echo ${HOSTNAME} && mkdir -p /var/data/${HOSTNAME} && fio /configs/fio.job --eta=never --directory=/var/data/${HOSTNAME}"]
+        volumeMounts:
+        - name: fio-config-vol
+          mountPath: /configs
+        - name: test-data
+          mountPath: /var/data
+        imagePullPolicy: Always
+      restartPolicy: Always
+      volumes:
+      - name: fio-config-vol
+        configMap:
+          name: fio-job-config
+      - name: test-data
+        persistentVolumeClaim:
+          claimName: ceph-test-ephemeral

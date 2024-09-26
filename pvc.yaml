@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: ceph-test-pvc
+  name: ceph-test-ephemeral
   namespace: jones
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 10Gi
-  storageClassName: csi-cephfs-sc
+      storage: 10Ti
+  storageClassName: csi-cephfs-sc-ephemeral
